@@ -1,9 +1,9 @@
 # Plugins
 
-The `spell-check` allows for additional dictionaries to be used at the same time using Atom's `providedServices` element in the `package.json` file.
+The `spell-check-plus` allows for additional dictionaries to be used at the same time using Atom's `providedServices` element in the `package.json` file.
 
     "providedServices": {
-      "spell-check": {
+      "spell-check-plus": {
         "versions": {
           "1.0.0": "nameOfFunctionToProvideSpellCheck"
         }
@@ -36,7 +36,7 @@ A common parameter type is `checkArgs`, this is a hash with the following signat
 Below the required methods for the checker instance.
 
 * getId(): string
-    * This returns the canonical identifier for this plugin. Typically, this will be the package name with an optional suffix for options, such as `spell-check-project` or `spell-check:en-US`. This identifier will be used for some control plugins (such as `spell-check-project`) to enable or disable the plugin.
+    * This returns the canonical identifier for this plugin. Typically, this will be the package name with an optional suffix for options, such as `spell-check-plus-project` or `spell-check-plus:en-US`. This identifier will be used for some control plugins (such as `spell-check-plus-project`) to enable or disable the plugin.
      * This will also used to pass information from the Atom process into the background task once that is implemented.
 * getPriority(): number
     * Determines how significant the plugin is for information with lower numbers being more important. Typically, user-entered data (such as the config `knownWords` configuration or a project's dictionary) will be lower than system data (priority 100).

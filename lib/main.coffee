@@ -11,34 +11,34 @@ module.exports =
     # arguments and pass them into the task. Whenever these change, we'll update
     # the object with the parameters and resend it to the task.
     @globalArgs =
-      locales: atom.config.get('spell-check.locales'),
-      localePaths: atom.config.get('spell-check.localePaths'),
-      useLocales: atom.config.get('spell-check.useLocales'),
-      knownWords: atom.config.get('spell-check.knownWords'),
-      addKnownWords: atom.config.get('spell-check.addKnownWords'),
+      locales: atom.config.get('spell-check-plus.locales'),
+      localePaths: atom.config.get('spell-check-plus.localePaths'),
+      useLocales: atom.config.get('spell-check-plus.useLocales'),
+      knownWords: atom.config.get('spell-check-plus.knownWords'),
+      addKnownWords: atom.config.get('spell-check-plus.addKnownWords'),
       checkerPaths: []
 
     manager = @getInstance @globalArgs
 
-    @subs.add atom.config.onDidChange 'spell-check.locales', ({newValue, oldValue}) =>
+    @subs.add atom.config.onDidChange 'spell-check-plus.locales', ({newValue, oldValue}) =>
       @globalArgs.locales = newValue
       manager.setGlobalArgs @globalArgs
-    @subs.add atom.config.onDidChange 'spell-check.localePaths', ({newValue, oldValue}) =>
+    @subs.add atom.config.onDidChange 'spell-check-plus.localePaths', ({newValue, oldValue}) =>
       @globalArgs.localePaths = newValue
       manager.setGlobalArgs @globalArgs
-    @subs.add atom.config.onDidChange 'spell-check.useLocales', ({newValue, oldValue}) =>
+    @subs.add atom.config.onDidChange 'spell-check-plus.useLocales', ({newValue, oldValue}) =>
       @globalArgs.useLocales = newValue
       manager.setGlobalArgs @globalArgs
-    @subs.add atom.config.onDidChange 'spell-check.knownWords', ({newValue, oldValue}) =>
+    @subs.add atom.config.onDidChange 'spell-check-plus.knownWords', ({newValue, oldValue}) =>
       @globalArgs.knownWords = newValue
       manager.setGlobalArgs @globalArgs
-    @subs.add atom.config.onDidChange 'spell-check.addKnownWords', ({newValue, oldValue}) =>
+    @subs.add atom.config.onDidChange 'spell-check-plus.addKnownWords', ({newValue, oldValue}) =>
       @globalArgs.addKnownWords = newValue
       manager.setGlobalArgs @globalArgs
 
     # Hook up the UI and processing.
     @subs.add atom.commands.add 'atom-workspace',
-        'spell-check:toggle': => @toggle()
+        'spell-check-plus:toggle': => @toggle()
     @viewsByEditor = new WeakMap
     @contextMenuEntries = []
     @subs.add atom.workspace.observeTextEditors (editor) =>

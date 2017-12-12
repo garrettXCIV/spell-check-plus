@@ -12,7 +12,7 @@ class SpellCheckView
 
     @taskWrapper = new SpellCheckTask @manager
 
-    @correctMisspellingCommand = atom.commands.add atom.views.getView(@editor), 'spell-check:correct-misspelling', =>
+    @correctMisspellingCommand = atom.commands.add atom.views.getView(@editor), 'spell-check-plus:correct-misspelling', =>
       if marker = @markerLayer.findMarkers({containsBufferPosition: @editor.getCursorBufferPosition()})[0]
         CorrectionsView ?= require './corrections-view'
         @correctionsView?.destroy()
@@ -30,7 +30,7 @@ class SpellCheckView
     @disposables.add atom.config.onDidChange 'editor.fontSize', =>
       @subscribeToBuffer()
 
-    @disposables.add atom.config.onDidChange 'spell-check.grammars', =>
+    @disposables.add atom.config.onDidChange 'spell-check-plus.grammars', =>
       @subscribeToBuffer()
 
     @subscribeToBuffer()
@@ -41,7 +41,7 @@ class SpellCheckView
     @markerLayer = @editor.addMarkerLayer({maintainHistory: false})
     @markerLayerDecoration = @editor.decorateMarkerLayer(@markerLayer, {
       type: 'highlight',
-      class: 'spell-check-misspelling',
+      class: 'spell-check-plus-misspelling',
       deprecatedRegionClass: 'misspelling'
     })
 
@@ -72,7 +72,7 @@ class SpellCheckView
 
   spellCheckCurrentGrammar: ->
     grammar = @editor.getGrammar().scopeName
-    _.contains(atom.config.get('spell-check.grammars'), grammar)
+    _.contains(atom.config.get('spell-check-plus.grammars'), grammar)
 
   destroyMarkers: ->
     @markerLayer.destroy()
@@ -80,8 +80,25 @@ class SpellCheckView
     @initializeMarkerLayer()
 
   addMarkers: (misspellings) ->
+    # Get disabled grammars from config
+    disabledGrammars = atom.config.get('spell-check-plus.disabledGrammars')
+
     for misspelling in misspellings
-      @markerLayer.markBufferRange(misspelling, {invalidate: 'touch'})
+      misspellingEnabled = true
+
+      # Loop through the range of positions until a
+      # disabled grammar is found in a position's grammars,
+      # or the end of the misspelling is reached
+      grammars = @editor
+        .scopeDescriptorForBufferPosition(misspelling[0])
+        .scopes
+      for grammar in grammars
+        if _.contains(disabledGrammars, grammar)
+          misspellingEnabled = false
+          break
+
+      if misspellingEnabled
+        @markerLayer.markBufferRange(misspelling, {invalidate: 'touch'})
 
   updateMisspellings: ->
     @taskWrapper.start @editor, (misspellings) =>
@@ -123,7 +140,7 @@ class SpellCheckView
         for correction in corrections
           contextMenuEntry = {}
           # Register new command for correction.
-          commandName = 'spell-check:correct-misspelling-' + correctionIndex
+          commandName = 'spell-check-plus:correct-misspelling-' + correctionIndex
           contextMenuEntry.command = do (correction, contextMenuEntry) =>
             atom.commands.add atom.views.getView(@editor), commandName, =>
               @makeCorrection(correction, marker)

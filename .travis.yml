@@ -3,7 +3,7 @@ sudo: false
 os: osx
 
 notifications:
-  email: never
+  email: false
 
 env:
   global:

@@ -12,7 +12,8 @@ class SpellCheckTask
     @constructor.removeFromArray(@constructor.jobs, (j) -> j.args.id is @id)
 
   start: (editor, onDidSpellCheck) ->
-    # Figure out the paths since we need that for checkers that are project-specific.
+    # Figure out the paths, since we need them
+    # for checkers that are project-specific.
     buffer = editor.getBuffer()
     projectPath = null
     relativePath = null
@@ -22,7 +23,7 @@ class SpellCheckTask
     # Remove old jobs for this SpellCheckTask from the shared jobs list.
     @constructor.removeFromArray(@constructor.jobs, (j) -> j.args.id is @id)
 
-    # Create an job that contains everything we'll need to do the work.
+    # Create a job that contains everything we'll need to do the work.
     job =
       manager: @manager
       callbacks: [onDidSpellCheck]
@@ -33,7 +34,8 @@ class SpellCheckTask
         relativePath: relativePath
         text: buffer.getText()
 
-    # If we already have a job for this work piggy-back on it with our callback.
+    # If we already have a job for this work,
+    # piggy-back on it with our callback.
     return if @constructor.piggybackExistingJob(job)
 
     # Do the work now if not busy or queue it for later.

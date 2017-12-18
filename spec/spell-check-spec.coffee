@@ -1,4 +1,4 @@
-SpellCheckTask = require '../lib/spell-check-task'
+scopeSpellCheckTask = require '../lib/spell-check-task'
 
 describe "Spell check", ->
   [workspaceElement, editor, editorElement, spellCheckModule] = []
@@ -26,7 +26,7 @@ describe "Spell check", ->
         spellCheckModule = mainModule
 
     runs ->
-      atom.config.set('spell-check-plus.grammars', [])
+      atom.config.set('spell-check-plus.scopes', [])
 
     runs ->
       jasmine.attachToDOM(workspaceElement)
@@ -39,7 +39,7 @@ describe "Spell check", ->
   it "decorates all misspelled words", ->
     atom.config.set('spell-check-plus.locales', ['en-US'])
     editor.setText("This middle of thiss\nsentencts\n\nhas issues and the \"edn\" 'dsoe' too")
-    atom.config.set('spell-check-plus.grammars', ['source.js'])
+    atom.config.set('spell-check-plus.scopes', ['source.js'])
 
     misspellingMarkers = null
     waitsFor ->
@@ -54,7 +54,7 @@ describe "Spell check", ->
   it "decorates misspelled words with a leading space", ->
     atom.config.set('spell-check-plus.locales', ['en-US'])
     editor.setText("\nchok bok")
-    atom.config.set('spell-check-plus.grammars', ['source.js'])
+    atom.config.set('spell-check-plus.scopes', ['source.js'])
 
     misspellingMarkers = null
     waitsFor ->
@@ -68,7 +68,7 @@ describe "Spell check", ->
     atom.config.set('spell-check-plus.knownWords', ['GitHub', '!github', 'codez'])
     atom.config.set('spell-check-plus.locales', ['en-US'])
     editor.setText("GitHub (aka github): Where codez are builz.")
-    atom.config.set('spell-check-plus.grammars', ['source.js'])
+    atom.config.set('spell-check-plus.scopes', ['source.js'])
 
     misspellingMarkers = null
     waitsFor ->
@@ -80,7 +80,7 @@ describe "Spell check", ->
   it "hides decorations when a misspelled word is edited", ->
     editor.setText('notaword')
     advanceClock(editor.getBuffer().getStoppedChangingDelay())
-    atom.config.set('spell-check-plus.grammars', ['source.js'])
+    atom.config.set('spell-check-plus.scopes', ['source.js'])
 
     waitsFor ->
       getMisspellingMarkers().length is 1
@@ -95,26 +95,26 @@ describe "Spell check", ->
       expect(misspellingMarkers.length).toBe 1
       expect(misspellingMarkers[0].isValid()).toBe false
 
-  describe "when spell checking for a grammar is removed", ->
+  describe "when spell checking for a scope is removed", ->
     it "removes all the misspellings", ->
       atom.config.set('spell-check-plus.locales', ['en-US'])
       editor.setText('notaword')
       advanceClock(editor.getBuffer().getStoppedChangingDelay())
-      atom.config.set('spell-check-plus.grammars', ['source.js'])
+      atom.config.set('spell-check-plus.scopes', ['source.js'])
 
       waitsFor ->
         getMisspellingMarkers().length is 1
 
       runs ->
-        atom.config.set('spell-check-plus.grammars', [])
+        atom.config.set('spell-check-plus.scopes', [])
         expect(getMisspellingMarkers().length).toBe 0
 
-  describe "when spell checking for a grammar is toggled off", ->
+  describe "when spell checking for a scope is toggled off", ->
     it "removes all the misspellings", ->
       atom.config.set('spell-check-plus.locales', ['en-US'])
       editor.setText('notaword')
       advanceClock(editor.getBuffer().getStoppedChangingDelay())
-      atom.config.set('spell-check-plus.grammars', ['source.js'])
+      atom.config.set('spell-check-plus.scopes', ['source.js'])
 
       waitsFor ->
         getMisspellingMarkers().length is 1
@@ -123,12 +123,12 @@ describe "Spell check", ->
         atom.commands.dispatch(workspaceElement, 'spell-check-plus:toggle')
         expect(getMisspellingMarkers().length).toBe 0
 
-  describe "when the editor's grammar changes to one that does not have spell check enabled", ->
+  describe "when the editor's scope changes to one that does not have spell check enabled", ->
     it "removes all the misspellings", ->
       atom.config.set('spell-check-plus.locales', ['en-US'])
       editor.setText('notaword')
       advanceClock(editor.getBuffer().getStoppedChangingDelay())
-      atom.config.set('spell-check-plus.grammars', ['source.js'])
+      atom.config.set('spell-check-plus.scopes', ['source.js'])
 
       misspellingMarkers = null
       waitsFor ->
@@ -145,7 +145,7 @@ describe "Spell check", ->
         atom.config.set('spell-check-plus.locales', ['en-US'])
         editor.setText('tofether')
         advanceClock(editor.getBuffer().getStoppedChangingDelay())
-        atom.config.set('spell-check-plus.grammars', ['source.js'])
+        atom.config.set('spell-check-plus.scopes', ['source.js'])
         correctionsElement = null
 
         waitsFor ->
@@ -174,7 +174,7 @@ describe "Spell check", ->
         atom.config.set('spell-check-plus.locales', ['en-US'])
         editor.setText('zxcasdfysyadfyasdyfasdfyasdfyasdfyasydfasdf')
         advanceClock(editor.getBuffer().getStoppedChangingDelay())
-        atom.config.set('spell-check-plus.grammars', ['source.js'])
+        atom.config.set('spell-check-plus.scopes', ['source.js'])
 
         waitsFor ->
           getMisspellingMarkers().length > 0
@@ -191,7 +191,7 @@ describe "Spell check", ->
         atom.config.set('spell-check-plus.locales', ['en-US'])
         editor.setText('tofether')
         advanceClock(editor.getBuffer().getStoppedChangingDelay())
-        atom.config.set('spell-check-plus.grammars', ['source.js'])
+        atom.config.set('spell-check-plus.scopes', ['source.js'])
 
         waitsFor ->
           getMisspellingMarkers().length is 1
@@ -235,7 +235,7 @@ describe "Spell check", ->
         atom.config.set('spell-check-plus.locales', ['en-US'])
         editor.setText('zxcasdfysyadfyasdyfasdfyasdfyasdfyasydfasdf')
         advanceClock(editor.getBuffer().getStoppedChangingDelay())
-        atom.config.set('spell-check-plus.grammars', ['source.js'])
+        atom.config.set('spell-check-plus.scopes', ['source.js'])
         atom.config.set('spell-check-plus.addKnownWords', true)
 
         expect(atom.config.get('spell-check-plus.knownWords').length).toBe 0
@@ -282,7 +282,7 @@ describe "Spell check", ->
     it "destroys all misspelling markers", ->
       atom.config.set('spell-check-plus.locales', ['en-US'])
       editor.setText('mispelling')
-      atom.config.set('spell-check-plus.grammars', ['source.js'])
+      atom.config.set('spell-check-plus.scopes', ['source.js'])
 
       waitsFor ->
         getMisspellingMarkers().length > 0
@@ -301,7 +301,7 @@ describe "Spell check", ->
       atom.config.set('spell-check-plus.locales', ['en-US'])
       atom.config.set('spell-check-plus.useLocales', false)
       editor.setText('eot')
-      atom.config.set('spell-check-plus.grammars', ['source.js'])
+      atom.config.set('spell-check-plus.scopes', ['source.js'])
 
       waitsFor ->
         getMisspellingMarkers().length is 1
@@ -319,7 +319,7 @@ describe "Spell check", ->
       atom.config.set('spell-check-plus.locales', ['en-US'])
       atom.config.set('spell-check-plus.useLocales', false)
       editor.setText('k1a eot')
-      atom.config.set('spell-check-plus.grammars', ['source.js'])
+      atom.config.set('spell-check-plus.scopes', ['source.js'])
 
       waitsFor ->
         getMisspellingMarkers().length is 1
@@ -337,7 +337,7 @@ describe "Spell check", ->
       atom.config.set('spell-check-plus.locales', ['en-US'])
       atom.config.set('spell-check-plus.useLocales', false)
       editor.setText('k2a eot')
-      atom.config.set('spell-check-plus.grammars', ['source.js'])
+      atom.config.set('spell-check-plus.scopes', ['source.js'])
 
       waitsFor ->
         getMisspellingMarkers().length is 2
@@ -355,7 +355,7 @@ describe "Spell check", ->
       atom.config.set('spell-check-plus.locales', ['en-US'])
       atom.config.set('spell-check-plus.useLocales', false)
       editor.setText('k2a good eot')
-      atom.config.set('spell-check-plus.grammars', ['source.js'])
+      atom.config.set('spell-check-plus.scopes', ['source.js'])
 
       waitsFor ->
         getMisspellingMarkers().length is 2
@@ -373,7 +373,7 @@ describe "Spell check", ->
       atom.config.set('spell-check-plus.locales', ['en-US'])
       atom.config.set('spell-check-plus.useLocales', false)
       editor.setText('k0a eot')
-      atom.config.set('spell-check-plus.grammars', ['source.js'])
+      atom.config.set('spell-check-plus.scopes', ['source.js'])
 
       waitsFor ->
         getMisspellingMarkers().length is 1
@@ -391,7 +391,7 @@ describe "Spell check", ->
       atom.config.set('spell-check-plus.locales', ['en-US'])
       atom.config.set('spell-check-plus.useLocales', false)
       editor.setText('k0b eot')
-      atom.config.set('spell-check-plus.grammars', ['source.js'])
+      atom.config.set('spell-check-plus.scopes', ['source.js'])
 
       waitsFor ->
         getMisspellingMarkers().length is 1
@@ -409,7 +409,7 @@ describe "Spell check", ->
       atom.config.set('spell-check-plus.locales', ['en-US'])
       atom.config.set('spell-check-plus.useLocales', false)
       editor.setText('k0c eot')
-      atom.config.set('spell-check-plus.grammars', ['source.js'])
+      atom.config.set('spell-check-plus.scopes', ['source.js'])
 
       waitsFor ->
         getMisspellingMarkers().length is 2

@@ -30,7 +30,7 @@ class SpellCheckView
     @disposables.add atom.config.onDidChange 'editor.fontSize', =>
       @subscribeToBuffer()
 
-    @disposables.add atom.config.onDidChange 'spell-check-plus.grammars', =>
+    @disposables.add atom.config.onDidChange 'spell-check-plus.scopes', =>
       @subscribeToBuffer()
 
     @subscribeToBuffer()
@@ -65,14 +65,14 @@ class SpellCheckView
   subscribeToBuffer: ->
     @unsubscribeFromBuffer()
 
-    if @spellCheckCurrentGrammar()
+    if @spellCheckCurrentScope()
       @buffer = @editor.getBuffer()
       @bufferDisposable = @buffer.onDidStopChanging => @updateMisspellings()
       @updateMisspellings()
 
-  spellCheckCurrentGrammar: ->
-    grammar = @editor.getGrammar().scopeName
-    _.contains(atom.config.get('spell-check-plus.grammars'), grammar)
+  spellCheckCurrentScope: ->
+    scope = @editor.getGrammar().scopeName
+    _.contains(atom.config.get('spell-check-plus.scopes'), scope)
 
   destroyMarkers: ->
     @markerLayer.destroy()
@@ -80,20 +80,20 @@ class SpellCheckView
     @initializeMarkerLayer()
 
   addMarkers: (misspellings) ->
-    # Get disabled grammars from config
-    disabledGrammars = atom.config.get('spell-check-plus.disabledGrammars')
+    # Get disabled scopes from config
+    disabledScopes = atom.config.get('spell-check-plus.disabledScopes')
 
     for misspelling in misspellings
       misspellingEnabled = true
 
       # Loop through the range of positions until a
-      # disabled grammar is found in a position's grammars,
+      # disabled scope is found in a position's scopes,
       # or the end of the misspelling is reached
-      grammars = @editor
+      scopes = @editor
         .scopeDescriptorForBufferPosition(misspelling[0])
         .scopes
-      for grammar in grammars
-        if _.contains(disabledGrammars, grammar)
+      for scope in scopes
+        if _.contains(disabledScopes, scopes)
           misspellingEnabled = false
           break
 

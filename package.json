@@ -1,14 +1,13 @@
 {
   "name": "spell-check-plus",
-  "version": "0.73.0",
+  "version": "0.74.0",
   "main": "./lib/main",
   "description": "Highlights misspelled words and shows possible corrections.",
   "dependencies": {
-    "atom-select-list": "^0.1.0",
-    "multi-integer-range": "^2.0.0",
-    "natural": "^0.4.0",
-    "spellchecker": "3.4.4",
-    "spelling-manager": "0.3.0",
+    "atom-select-list": "^0.7.0",
+    "multi-integer-range": "^4.0.3",
+    "spellchecker": "^3.4.4",
+    "spelling-manager": "^1.0.0",
     "underscore-plus": "^1"
   },
   "repository": "https://github.com/gucciferxciv/spell-check-plus",
@@ -17,7 +16,7 @@
     "atom": "*"
   },
   "configSchema": {
-    "grammars": {
+    "scopes": {
       "type": "array",
       "default": [
         "source.asciidoc",
@@ -29,7 +28,7 @@
       "description": "List of scopes for languages which will be checked for misspellings. See [the README](https://github.com/gucciferxciv/spell-check-plus#spell-check-package) for more information on finding the correct scope for a specific language.",
       "order": 1
     },
-    "disabledGrammars": {
+    "disabledScopes": {
       "type": "array",
       "default": [],
       "description": "List of scopes that will not be checked for misspellings. See [the README](https://github.com/gucciferxciv/spell-check-plus#spell-check-package) for more information on finding the correct scope for a specific part of a language.",
@@ -73,7 +72,7 @@
     }
   },
   "devDependencies": {
-    "coffeelint": "^1.9.7"
+    "coffeelint": "^2.0.7"
   },
   "consumedServices": {
     "spell-check-plus": {
